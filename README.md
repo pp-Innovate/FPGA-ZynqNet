@@ -1,5 +1,5 @@
 # FPGA-ZynqNet
-FPGA-based CNN accelerator developed by Vivado HLS 
+FPGA-based CNN accelerator developed by Vivado HLS. 
 ZynqNet(https://github.com/dgschwend/zynqnet) is a Convolution Neural Network designed for ImageNet classification which is similar to SqueezeNet-V1.1
 
 Quantization: 8-bit dynamic fixed point
