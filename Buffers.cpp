@@ -9,6 +9,12 @@ void window_generator(
 		data_t temp[3]
 	)
 {
+#pragma HLS DEPENDENCE variable=linebuf1 inter false
+#pragma HLS RESOURCE variable=linebuf2 core=RAM_S2P_BRAM
+#pragma HLS RESOURCE variable=linebuf1 core=RAM_S2P_BRAM
+#pragma HLS ARRAY_PARTITION variable=temp complete dim=1
+#pragma HLS ARRAY_PARTITION variable=win_out complete dim=1
+#pragma HLS INLINE
 	temp[0] = d_in;
 	temp[1] = linebuf1[column];
 	temp[2] = linebuf2[column];

@@ -100,6 +100,7 @@ adder_tree_t processing_element_3x3(
 		ap_int<5> fl_in
 	)
 {
+#pragma HLS INLINE
 #pragma HLS ARRAY_PARTITION variable=w_in complete dim=0
 #pragma HLS ARRAY_PARTITION variable=d_in dim=0
 #pragma HLS PIPELINE

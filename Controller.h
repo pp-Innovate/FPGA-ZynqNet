@@ -21,7 +21,7 @@ using namespace std;
 #define OUTPUT_BUF_DEPTH 128 * 128
 
 void controller_3x3(
-		data_t src[INPUT_BUF_DEPTH][MACC_NUM],
+		data_t src[MACC_NUM][INPUT_BUF_DEPTH],
 		ap_uint<8> width,
 		ap_uint<8> height,
 		ap_uint<2> stride,
@@ -30,7 +30,7 @@ void controller_3x3(
 		weight_t b_in[PE_NUM],
 		bool first,
 		bool last,
-		data_t dst[OUTPUT_BUF_DEPTH][PE_NUM],
+		data_t dst[PE_NUM][OUTPUT_BUF_DEPTH],
 		ap_int<5> fl_in,
 		ap_int<5> fl_out,
 		ap_int<5> fl_params

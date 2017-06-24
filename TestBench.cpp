@@ -207,15 +207,15 @@ int controller_3x3_test(void)
 	load_data("data/conv1.dat", 64, 128, 128, -3, conv1_d);
 	load_data("data/fire2_squeeze3x3.dat", 16, 64, 64, -5, fire2_squeeze3x3_d);
 
-	data_t *sources = new data_t[128 * 128 * MACC_NUM];
-	data_t destination[64 * 64][PE_NUM];
+	data_t *sources = new data_t[MACC_NUM * 256 * 256];
+	data_t destination[PE_NUM][128 * 128];
 	weight_t weights[PE_NUM][MACC_NUM][9];
 
 	int err = 0;
 
 	for(int i = 0; i < MACC_NUM; i++)
 		for(int j = 0; j < 128 * 128; j++)
-			sources[j * MACC_NUM + i] = conv1_d[i * 128 * 128 + j];
+			sources[i * 256 * 256 + j] = conv1_d[i * 128 * 128 + j];
 
 	for(int i = 0; i < PE_NUM; i++)
 		for(int j = 0; j < MACC_NUM; j++)
@@ -223,16 +223,16 @@ int controller_3x3_test(void)
 				weights[i][j][k] = fire2_squeeze3x3_w[i * 64 * 9 + j * 9 + k];
 
 	controller_3x3(
-			(data_t (*)[MACC_NUM])sources,
-			128,
-			128,
+			(data_t (*)[INPUT_BUF_DEPTH])sources,
+			128 + 2,
+			128 + 2,
 			2,
 			1,
 			weights,
 			&fire2_squeeze3x3_b[0],
 			1,
 			0,
-			destination,
+			(data_t (*)[OUTPUT_BUF_DEPTH])destination,
 			-3,
 			-5,
 			6
@@ -240,7 +240,7 @@ int controller_3x3_test(void)
 
 	for(int i = 0; i < MACC_NUM; i++)
 		for(int j = 0; j < 128 * 128; j++)
-			sources[j * MACC_NUM + i] = conv1_d[(i + MACC_NUM) * 128 * 128 + j];
+			sources[i * 256 * 256 + j] = conv1_d[(i + MACC_NUM) * 128 * 128 + j];
 
 	for(int i = 0; i < PE_NUM; i++)
 		for(int j = 0; j < MACC_NUM; j++)
@@ -248,16 +248,16 @@ int controller_3x3_test(void)
 				weights[i][j][k] = fire2_squeeze3x3_w[i * 64 * 9 + (j + MACC_NUM) * 9 + k];
 
 	controller_3x3(
-			(data_t (*)[MACC_NUM])sources,
-			128,
-			128,
+			(data_t (*)[INPUT_BUF_DEPTH])sources,
+			128 + 2,
+			128 + 2,
 			2,
 			1,
 			weights,
 			&fire2_squeeze3x3_b[0],
 			0,
 			1,
-			destination,
+			(data_t (*)[OUTPUT_BUF_DEPTH])destination,
 			-3,
 			-5,
 			6
@@ -270,7 +270,7 @@ int controller_3x3_test(void)
 			for(int k = 0; k < 64; k++)
 			{
 				data_t result_gold = fire2_squeeze3x3_d[i * 64 * 64 + j * 64 + k];
-				data_t result_dut = destination[j * 64 + k][i];
+				data_t result_dut = destination[i][j * 64 + k];
 
 				if(result_dut - result_gold)
 					err++;
